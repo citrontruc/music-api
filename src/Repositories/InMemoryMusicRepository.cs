@@ -30,8 +30,8 @@ namespace MusicDatabaseApi.Repositories
         {
             lock (_lock)
             {
-                return _albums.Values
-                    .OrderBy(a => a.ArtistName)
+                return _albums
+                    .Values.OrderBy(a => a.ArtistName)
                     .ThenBy(a => a.Name)
                     //.Skip((ownerParameters.PageNumber - 1) * ownerParameters.PageSize)
                     //.Take(ownerParameters.PageSize)
@@ -53,9 +53,7 @@ namespace MusicDatabaseApi.Repositories
             lock (_lock)
             {
                 return _albums
-                    .Values.Where(a => 
-                        a.Name.Contains(name, StringComparison.OrdinalIgnoreCase)
-                    )
+                    .Values.Where(a => a.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
                     .OrderBy(a => a.Name)
                     .ToList();
             }

@@ -2,7 +2,4 @@
 Paramaters for our Albums
 */
 
-
-public class AlbumParameters : QueryStringParameters
-{        
-}
+public class AlbumParameters : QueryStringParameters { }

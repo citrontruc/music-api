@@ -1,5 +1,5 @@
 /*
-An abstract class to fix query parameters when we retrieve our elements 
+An abstract class to fix query parameters when we retrieve our elements
 */
 
 public abstract class QueryStringParameters
@@ -10,13 +10,7 @@ public abstract class QueryStringParameters
     private int _pageSize = 10;
     public int PageSize
     {
-        get
-        {
-            return _pageSize;
-        }
-        set
-        {
-            _pageSize = (value > maxPageSize) ? maxPageSize : value;
-        }
+        get { return _pageSize; }
+        set { _pageSize = (value > maxPageSize) ? maxPageSize : value; }
     }
 }

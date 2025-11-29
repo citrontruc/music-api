@@ -40,7 +40,13 @@ namespace MusicDatabaseApi.Endpoints
             return Results.Created($"/api/albums/{album.Id}", album);
         }
 
-        private static IResult GetAlbums(string? name, string? artist, IMusicRepository repo, int number = 10, int page = 1)
+        private static IResult GetAlbums(
+            string? name,
+            string? artist,
+            IMusicRepository repo,
+            int number = 10,
+            int page = 1
+        )
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
