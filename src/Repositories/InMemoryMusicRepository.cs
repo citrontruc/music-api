@@ -26,11 +26,16 @@ namespace MusicDatabaseApi.Repositories
             return album;
         }
 
-        public IEnumerable<Album> GetAllAlbums()
+        public IEnumerable<Album> GetAllAlbums(int number, int page)
         {
             lock (_lock)
             {
-                return _albums.Values.OrderBy(a => a.ArtistName).ThenBy(a => a.Name).ToList();
+                return _albums.Values
+                    .OrderBy(a => a.ArtistName)
+                    .ThenBy(a => a.Name)
+                    //.Skip((ownerParameters.PageNumber - 1) * ownerParameters.PageSize)
+                    //.Take(ownerParameters.PageSize)
+                    .ToList();
             }
         }
 
@@ -43,18 +48,20 @@ namespace MusicDatabaseApi.Repositories
             }
         }
 
-        public IEnumerable<Album> GetAlbumsByName(string name)
+        public IEnumerable<Album> GetAlbumsByName(string name, int number, int page)
         {
             lock (_lock)
             {
                 return _albums
-                    .Values.Where(a => a.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                    .Values.Where(a => 
+                        a.Name.Contains(name, StringComparison.OrdinalIgnoreCase)
+                    )
                     .OrderBy(a => a.Name)
                     .ToList();
             }
         }
 
-        public IEnumerable<Album> GetAlbumsByArtist(string artistName)
+        public IEnumerable<Album> GetAlbumsByArtist(string artistName, int number, int page)
         {
             lock (_lock)
             {

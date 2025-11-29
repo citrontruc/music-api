@@ -1,5 +1,5 @@
 /*
-The entry oint to our program.
+The entry point to our program.
 */
 
 using MusicDatabaseApi.Endpoints;

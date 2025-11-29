@@ -1,5 +1,6 @@
 namespace MusicDatabaseApi.Endpoints
 {
+    using Microsoft.AspNetCore.Mvc;
     using MusicDatabaseApi.Models;
     using MusicDatabaseApi.Repositories;
 
@@ -39,22 +40,22 @@ namespace MusicDatabaseApi.Endpoints
             return Results.Created($"/api/albums/{album.Id}", album);
         }
 
-        private static IResult GetAlbums(string? name, string? artist, IMusicRepository repo)
+        private static IResult GetAlbums(string? name, string? artist, IMusicRepository repo, int number = 10, int page = 1)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return Results.Ok(repo.GetAlbumsByName(name));
+                return Results.Ok(repo.GetAlbumsByName(name, number, page));
             }
 
             if (!string.IsNullOrWhiteSpace(artist))
             {
-                return Results.Ok(repo.GetAlbumsByArtist(artist));
+                return Results.Ok(repo.GetAlbumsByArtist(artist, number, page));
             }
 
-            return Results.Ok(repo.GetAllAlbums());
+            return Results.Ok(repo.GetAllAlbums(number, page));
         }
 
-        private static IResult GetAlbumById(Guid id, IMusicRepository repo)
+        private static IResult GetAlbumById([FromQuery] Guid id, IMusicRepository repo)
         {
             var album = repo.GetAlbumById(id);
             return album is null ? Results.NotFound() : Results.Ok(album);
