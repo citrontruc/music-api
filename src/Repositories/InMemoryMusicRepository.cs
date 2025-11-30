@@ -44,16 +44,12 @@ namespace MusicDatabaseApi.Repositories
             );
             lock (_lock)
             {
-                return PagedList<Album>.ToPagedList(
-                    _albums
+                return _albums
                         .Values.OrderBy(a => a.ArtistName)
                         .ThenBy(a => a.Name)
                         .Skip((correctPageNumber - 1) * correctPageSize)
                         .Take(correctPageSize)
-                        .ToList(),
-                    correctPageSize,
-                    correctPageNumber
-                );
+                        .ToList();
             }
         }
 
