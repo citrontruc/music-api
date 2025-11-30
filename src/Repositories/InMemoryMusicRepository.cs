@@ -38,15 +38,22 @@ namespace MusicDatabaseApi.Repositories
 
         public IEnumerable<Album> GetAllAlbums(int? pageSize, int? pageNumber)
         {
-            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(pageSize, pageNumber);
+            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
+                pageSize,
+                pageNumber
+            );
             lock (_lock)
             {
-                return PagedList<Album>.ToPagedList(_albums
-                    .Values.OrderBy(a => a.ArtistName)
-                    .ThenBy(a => a.Name)
-                    .Skip((correctPageNumber - 1) * correctPageSize)
-                    .Take(correctPageSize)
-                    .ToList(), correctPageSize, correctPageNumber);
+                return PagedList<Album>.ToPagedList(
+                    _albums
+                        .Values.OrderBy(a => a.ArtistName)
+                        .ThenBy(a => a.Name)
+                        .Skip((correctPageNumber - 1) * correctPageSize)
+                        .Take(correctPageSize)
+                        .ToList(),
+                    correctPageSize,
+                    correctPageNumber
+                );
             }
         }
 
@@ -61,7 +68,10 @@ namespace MusicDatabaseApi.Repositories
 
         public IEnumerable<Album> GetAlbumsByName(string name, int? pageSize, int? pageNumber)
         {
-            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(pageSize, pageNumber);
+            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
+                pageSize,
+                pageNumber
+            );
             lock (_lock)
             {
                 return _albums
@@ -73,9 +83,16 @@ namespace MusicDatabaseApi.Repositories
             }
         }
 
-        public IEnumerable<Album> GetAlbumsByArtist(string artistName, int? pageSize, int? pageNumber)
+        public IEnumerable<Album> GetAlbumsByArtist(
+            string artistName,
+            int? pageSize,
+            int? pageNumber
+        )
         {
-            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(pageSize, pageNumber);
+            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
+                pageSize,
+                pageNumber
+            );
             lock (_lock)
             {
                 return _albums
@@ -88,6 +105,7 @@ namespace MusicDatabaseApi.Repositories
                     .ToList();
             }
         }
+
         private (int, int) CorrectPaginationParameters(int? pageSize, int? pageNumber)
         {
             int interPageSize = pageSize ?? _defaultAlbumParameters.PageSize;

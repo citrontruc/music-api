@@ -53,7 +53,7 @@ namespace MusicDatabaseApi.Endpoints
             string? artist,
             int? pageSize,
             int? pageNumber,
-            IMusicRepository repo            
+            IMusicRepository repo
         )
         {
             if (!string.IsNullOrWhiteSpace(name))
