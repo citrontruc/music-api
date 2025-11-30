@@ -4,10 +4,10 @@ namespace MusicDatabaseApi.Models
 {
     public record Album(
         [Required] Guid Id,
-        [StringLength(200)] string Name,
-        string ArtistName,
+        [Required] [StringLength(200)] string Name,
+        [Required] [StringLength(100)] string ArtistName,
         int ReleaseYear,
         string Genre,
-        DateTime CreatedAt
+        [Required] DateTime CreatedAt
     );
 }

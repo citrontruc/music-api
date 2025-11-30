@@ -1,3 +1,7 @@
+/*
+A class to store our albums in memory.
+*/
+
 namespace MusicDatabaseApi.Repositories
 {
     using MusicDatabaseApi.Models;
@@ -6,6 +10,11 @@ namespace MusicDatabaseApi.Repositories
     {
         private readonly Dictionary<Guid, Album> _albums = new();
         private readonly object _lock = new();
+        private AlbumParameters _defaultAlbumParameters;
+        public InMemoryMusicRepository(AlbumParameters defaultAlbumParameters)
+        {
+            _defaultAlbumParameters = defaultAlbumParameters;
+        }
 
         public Album CreateAlbum(CreateAlbumRequest request)
         {
@@ -28,13 +37,15 @@ namespace MusicDatabaseApi.Repositories
 
         public IEnumerable<Album> GetAllAlbums(int number, int page)
         {
+            int correctNumber = (_defaultAlbumParameters.PageSize > number) ? number : _defaultAlbumParameters.PageSize;
+            int correctPage = (_defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize > page * correctNumber) ? page : _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize - correctNumber;
             lock (_lock)
             {
                 return _albums
                     .Values.OrderBy(a => a.ArtistName)
                     .ThenBy(a => a.Name)
-                    //.Skip((ownerParameters.PageNumber - 1) * ownerParameters.PageSize)
-                    //.Take(ownerParameters.PageSize)
+                    .Skip((correctPage - 1) * correctNumber)
+                    .Take(correctNumber)
                     .ToList();
             }
         }

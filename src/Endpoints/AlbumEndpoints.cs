@@ -1,3 +1,7 @@
+/*
+A class to add the endpoints to add albums to our database.
+*/
+
 namespace MusicDatabaseApi.Endpoints
 {
     using Microsoft.AspNetCore.Mvc;
@@ -6,6 +10,10 @@ namespace MusicDatabaseApi.Endpoints
 
     public static class AlbumEndpoints
     {
+        /// <summary>
+        /// Extension of the app in order to add endpoints to retrieve albums
+        /// </summary>
+        /// <param name="app"></param>
         public static void MapAlbumEndpoints(this WebApplication app)
         {
             var group = app.MapGroup("/api/albums").WithTags("Albums");

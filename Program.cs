@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IMusicRepository, InMemoryMusicRepository>();
+builder.Services.AddSingleton<AlbumParameters, AlbumParameters>();
 
 var app = builder.Build();
 
