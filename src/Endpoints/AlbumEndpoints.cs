@@ -51,22 +51,22 @@ namespace MusicDatabaseApi.Endpoints
         private static IResult GetAlbums(
             string? name,
             string? artist,
-            IMusicRepository repo,
-            int number = 10,
-            int page = 1
+            int? pageSize,
+            int? pageNumber,
+            IMusicRepository repo            
         )
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return Results.Ok(repo.GetAlbumsByName(name, number, page));
+                return Results.Ok(repo.GetAlbumsByName(name, pageSize, pageNumber));
             }
 
             if (!string.IsNullOrWhiteSpace(artist))
             {
-                return Results.Ok(repo.GetAlbumsByArtist(artist, number, page));
+                return Results.Ok(repo.GetAlbumsByArtist(artist, pageSize, pageNumber));
             }
 
-            return Results.Ok(repo.GetAllAlbums(number, page));
+            return Results.Ok(repo.GetAllAlbums(pageSize, pageNumber));
         }
 
         private static IResult GetAlbumById([FromQuery] Guid id, IMusicRepository repo)

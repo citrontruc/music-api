@@ -36,28 +36,17 @@ namespace MusicDatabaseApi.Repositories
             return album;
         }
 
-        public IEnumerable<Album> GetAllAlbums(int number, int page)
+        public IEnumerable<Album> GetAllAlbums(int? pageSize, int? pageNumber)
         {
-            int correctNumber =
-                (_defaultAlbumParameters.PageSize > number)
-                    ? number
-                    : _defaultAlbumParameters.PageSize;
-            int correctPage =
-                (
-                    _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
-                    > page * correctNumber
-                )
-                    ? page
-                    : _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
-                        - correctNumber;
+            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(pageSize, pageNumber);
             lock (_lock)
             {
-                return _albums
+                return PagedList<Album>.ToPagedList(_albums
                     .Values.OrderBy(a => a.ArtistName)
                     .ThenBy(a => a.Name)
-                    .Skip((correctPage - 1) * correctNumber)
-                    .Take(correctNumber)
-                    .ToList();
+                    .Skip((correctPageNumber - 1) * correctPageSize)
+                    .Take(correctPageSize)
+                    .ToList(), correctPageSize, correctPageNumber);
             }
         }
 
@@ -70,28 +59,52 @@ namespace MusicDatabaseApi.Repositories
             }
         }
 
-        public IEnumerable<Album> GetAlbumsByName(string name, int number, int page)
+        public IEnumerable<Album> GetAlbumsByName(string name, int? pageSize, int? pageNumber)
         {
+            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(pageSize, pageNumber);
             lock (_lock)
             {
                 return _albums
                     .Values.Where(a => a.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                    .Skip((correctPageNumber - 1) * correctPageSize)
+                    .Take(correctPageSize)
                     .OrderBy(a => a.Name)
                     .ToList();
             }
         }
 
-        public IEnumerable<Album> GetAlbumsByArtist(string artistName, int number, int page)
+        public IEnumerable<Album> GetAlbumsByArtist(string artistName, int? pageSize, int? pageNumber)
         {
+            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(pageSize, pageNumber);
             lock (_lock)
             {
                 return _albums
                     .Values.Where(a =>
                         a.ArtistName.Contains(artistName, StringComparison.OrdinalIgnoreCase)
                     )
+                    .Skip((correctPageNumber - 1) * correctPageSize)
+                    .Take(correctPageSize)
                     .OrderBy(a => a.ReleaseYear)
                     .ToList();
             }
+        }
+        private (int, int) CorrectPaginationParameters(int? pageSize, int? pageNumber)
+        {
+            int interPageSize = pageSize ?? _defaultAlbumParameters.PageSize;
+            int interPageNumber = pageNumber ?? _defaultAlbumParameters.PageNumber;
+            int correctPageSize =
+                (_defaultAlbumParameters.PageSize >= interPageSize)
+                    ? interPageSize
+                    : _defaultAlbumParameters.PageSize;
+            int correctPageNumber =
+                (
+                    _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
+                    >= interPageNumber * correctPageSize
+                )
+                    ? interPageNumber
+                    : _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
+                        - correctPageSize;
+            return (correctPageSize, correctPageNumber);
         }
     }
 }
