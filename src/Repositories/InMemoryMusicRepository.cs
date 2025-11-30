@@ -11,6 +11,7 @@ namespace MusicDatabaseApi.Repositories
         private readonly Dictionary<Guid, Album> _albums = new();
         private readonly object _lock = new();
         private AlbumParameters _defaultAlbumParameters;
+
         public InMemoryMusicRepository(AlbumParameters defaultAlbumParameters)
         {
             _defaultAlbumParameters = defaultAlbumParameters;
@@ -37,8 +38,18 @@ namespace MusicDatabaseApi.Repositories
 
         public IEnumerable<Album> GetAllAlbums(int number, int page)
         {
-            int correctNumber = (_defaultAlbumParameters.PageSize > number) ? number : _defaultAlbumParameters.PageSize;
-            int correctPage = (_defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize > page * correctNumber) ? page : _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize - correctNumber;
+            int correctNumber =
+                (_defaultAlbumParameters.PageSize > number)
+                    ? number
+                    : _defaultAlbumParameters.PageSize;
+            int correctPage =
+                (
+                    _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
+                    > page * correctNumber
+                )
+                    ? page
+                    : _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
+                        - correctNumber;
             lock (_lock)
             {
                 return _albums
