@@ -1,24 +1,25 @@
 /*
 A class to store our albums in memory.
-Obsolete version which worked with a dictionary.
+*/
+using Microsoft.EntityFrameworkCore;
 
 namespace MusicDatabaseApi.Repositories
 {
+    using MusicDatabaseApi.Data;
     using MusicDatabaseApi.Models;
 
-    public class InMemoryMusicRepository : IMusicRepository
+    public class SqlMusicRepository : IMusicRepository
     {
-        private readonly Dictionary<Guid, Album> _albums = new();
-        private readonly object _lock = new();
         private AlbumParameters _defaultAlbumParameters;
 
-        public InMemoryMusicRepository(AlbumParameters defaultAlbumParameters)
+        public SqlMusicRepository(AlbumParameters defaultAlbumParameters)
         {
             _defaultAlbumParameters = defaultAlbumParameters;
         }
 
-        public Album CreateAlbum(CreateAlbumRequest request)
+        public Album CreateAlbum(MusicDbContext db, CreateAlbumRequest request)
         {
+            // Note: We save our changes but do not reload our database.
             var album = new Album(
                 Id: Guid.NewGuid(),
                 Name: request.Name,
@@ -27,59 +28,55 @@ namespace MusicDatabaseApi.Repositories
                 Genre: request.Genre,
                 CreatedAt: DateTime.UtcNow
             );
-
-            lock (_lock)
-            {
-                _albums.Add(album.Id, album);
-            }
+            db.Albums.Add(album);
+            db.SaveChanges();
 
             return album;
         }
 
-        public IEnumerable<Album> GetAllAlbums(int? pageSize, int? pageNumber)
+        public IEnumerable<Album> GetAllAlbums(MusicDbContext db, int? pageSize, int? pageNumber)
         {
             (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
                 pageSize,
                 pageNumber
             );
-            lock (_lock)
-            {
-                return _albums
-                    .Values.OrderBy(a => a.ArtistName)
-                    .ThenBy(a => a.Name)
-                    .Skip((correctPageNumber - 1) * correctPageSize)
-                    .Take(correctPageSize)
-                    .ToList();
-            }
+
+            return PagedList<Album>.ToPagedList(
+                db.Albums.AsNoTracking().OrderBy(a => a.ArtistName).ThenBy(a => a.Name),
+                correctPageSize,
+                correctPageNumber
+            );
         }
 
-        public Album? GetAlbumById(Guid id)
+        public Album? GetAlbumById(MusicDbContext db, Guid id)
         {
-            lock (_lock)
-            {
-                _albums.TryGetValue(id, out var album);
-                return album;
-            }
+            Album? album = db.Albums.FirstOrDefault(a => a.Id == id);
+            ;
+            return album;
         }
 
-        public IEnumerable<Album> GetAlbumsByName(string name, int? pageSize, int? pageNumber)
+        public IEnumerable<Album> GetAlbumsByName(
+            MusicDbContext db,
+            string name,
+            int? pageSize,
+            int? pageNumber
+        )
         {
             (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
                 pageSize,
                 pageNumber
             );
-            lock (_lock)
-            {
-                return _albums
-                    .Values.Where(a => a.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
-                    .Skip((correctPageNumber - 1) * correctPageSize)
-                    .Take(correctPageSize)
+            return PagedList<Album>.ToPagedList(
+                db.Albums.Where(a => a.Name.ToLower().Contains(name.ToLower()))
                     .OrderBy(a => a.Name)
-                    .ToList();
-            }
+                    .AsNoTracking(),
+                correctPageSize,
+                correctPageNumber
+            );
         }
 
         public IEnumerable<Album> GetAlbumsByArtist(
+            MusicDbContext db,
             string artistName,
             int? pageSize,
             int? pageNumber
@@ -89,17 +86,13 @@ namespace MusicDatabaseApi.Repositories
                 pageSize,
                 pageNumber
             );
-            lock (_lock)
-            {
-                return _albums
-                    .Values.Where(a =>
-                        a.ArtistName.Contains(artistName, StringComparison.OrdinalIgnoreCase)
-                    )
-                    .Skip((correctPageNumber - 1) * correctPageSize)
-                    .Take(correctPageSize)
-                    .OrderBy(a => a.ReleaseYear)
-                    .ToList();
-            }
+            return PagedList<Album>.ToPagedList(
+                db.Albums.Where(a => a.ArtistName.ToLower().Contains(artistName.ToLower()))
+                    .OrderBy(a => a.ArtistName)
+                    .AsNoTracking(),
+                correctPageSize,
+                correctPageNumber
+            );
         }
 
         private (int, int) CorrectPaginationParameters(int? pageSize, int? pageNumber)
@@ -122,4 +115,3 @@ namespace MusicDatabaseApi.Repositories
         }
     }
 }
-*/

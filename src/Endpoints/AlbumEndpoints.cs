@@ -2,9 +2,10 @@
 A class to add the endpoints to add albums to our database.
 */
 
+using MusicDatabaseApi.Data;
+
 namespace MusicDatabaseApi.Endpoints
 {
-    using Microsoft.AspNetCore.Mvc;
     using MusicDatabaseApi.Models;
     using MusicDatabaseApi.Repositories;
 
@@ -34,7 +35,11 @@ namespace MusicDatabaseApi.Endpoints
                 .WithSummary("Get a specific album by ID");
         }
 
-        private static IResult CreateAlbum(CreateAlbumRequest request, IMusicRepository repo)
+        private static IResult CreateAlbum(
+            MusicDbContext db,
+            CreateAlbumRequest request,
+            IMusicRepository repo
+        )
         {
             if (
                 string.IsNullOrWhiteSpace(request.Name)
@@ -44,11 +49,12 @@ namespace MusicDatabaseApi.Endpoints
                 return Results.BadRequest("Album name and artist name are required.");
             }
 
-            var album = repo.CreateAlbum(request);
+            var album = repo.CreateAlbum(db, request);
             return Results.Created($"/api/albums/{album.Id}", album);
         }
 
         private static IResult GetAlbums(
+            MusicDbContext db,
             string? name,
             string? artist,
             int? pageSize,
@@ -58,20 +64,20 @@ namespace MusicDatabaseApi.Endpoints
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return Results.Ok(repo.GetAlbumsByName(name, pageSize, pageNumber));
+                return Results.Ok(repo.GetAlbumsByName(db, name, pageSize, pageNumber));
             }
 
             if (!string.IsNullOrWhiteSpace(artist))
             {
-                return Results.Ok(repo.GetAlbumsByArtist(artist, pageSize, pageNumber));
+                return Results.Ok(repo.GetAlbumsByArtist(db, artist, pageSize, pageNumber));
             }
 
-            return Results.Ok(repo.GetAllAlbums(pageSize, pageNumber));
+            return Results.Ok(repo.GetAllAlbums(db, pageSize, pageNumber));
         }
 
-        private static IResult GetAlbumById([FromQuery] Guid id, IMusicRepository repo)
+        private static IResult GetAlbumById(MusicDbContext db, Guid id, IMusicRepository repo)
         {
-            var album = repo.GetAlbumById(id);
+            var album = repo.GetAlbumById(db, id);
             return album is null ? Results.NotFound() : Results.Ok(album);
         }
     }
