@@ -57,4 +57,4 @@ nunit-*.xml
 *.db
 
 # Properties
-Properties/*
+[Pp]roperties/*
