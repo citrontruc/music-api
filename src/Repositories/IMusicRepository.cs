@@ -6,16 +6,16 @@ namespace MusicDatabaseApi.Repositories
 
     public interface IMusicRepository
     {
-        Album CreateAlbum(MusicDbContext db, CreateAlbumRequest request);
-        IEnumerable<Album> GetAllAlbums(MusicDbContext db, int? pageSize, int? pageNumber);
-        Album? GetAlbumById(MusicDbContext db, Guid id);
-        IEnumerable<Album> GetAlbumsByName(
+        Task<Album> CreateAlbum(MusicDbContext db, CreateAlbumRequest request);
+        Task<IEnumerable<Album>> GetAllAlbums(MusicDbContext db, int? pageSize, int? pageNumber);
+        Task<Album?> GetAlbumById(MusicDbContext db, Guid id);
+        Task<IEnumerable<Album>> GetAlbumsByName(
             MusicDbContext db,
             string name,
             int? pageSize,
             int? pageNumber
         );
-        IEnumerable<Album> GetAlbumsByArtist(
+        Task<IEnumerable<Album>> GetAlbumsByArtist(
             MusicDbContext db,
             string artistName,
             int? pageSize,

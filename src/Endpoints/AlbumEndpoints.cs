@@ -6,6 +6,7 @@ using MusicDatabaseApi.Data;
 
 namespace MusicDatabaseApi.Endpoints
 {
+    using System.Threading.Tasks;
     using MusicDatabaseApi.Models;
     using MusicDatabaseApi.Repositories;
 
@@ -35,7 +36,7 @@ namespace MusicDatabaseApi.Endpoints
                 .WithSummary("Get a specific album by ID");
         }
 
-        private static IResult CreateAlbum(
+        private static async Task<IResult> CreateAlbum(
             MusicDbContext db,
             CreateAlbumRequest request,
             IMusicRepository repo
@@ -49,11 +50,11 @@ namespace MusicDatabaseApi.Endpoints
                 return Results.BadRequest("Album name and artist name are required.");
             }
 
-            var album = repo.CreateAlbum(db, request);
+            var album = await repo.CreateAlbum(db, request);
             return Results.Created($"/api/albums/{album.Id}", album);
         }
 
-        private static IResult GetAlbums(
+        private static async Task<IResult> GetAlbums(
             MusicDbContext db,
             string? name,
             string? artist,
@@ -64,20 +65,20 @@ namespace MusicDatabaseApi.Endpoints
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return Results.Ok(repo.GetAlbumsByName(db, name, pageSize, pageNumber));
+                return Results.Ok( await repo.GetAlbumsByName(db, name, pageSize, pageNumber));
             }
 
             if (!string.IsNullOrWhiteSpace(artist))
             {
-                return Results.Ok(repo.GetAlbumsByArtist(db, artist, pageSize, pageNumber));
+                return Results.Ok( await repo.GetAlbumsByArtist(db, artist, pageSize, pageNumber));
             }
 
-            return Results.Ok(repo.GetAllAlbums(db, pageSize, pageNumber));
+            return Results.Ok( await repo.GetAllAlbums(db, pageSize, pageNumber));
         }
 
-        private static IResult GetAlbumById(MusicDbContext db, Guid id, IMusicRepository repo)
+        private async static Task<IResult> GetAlbumById(MusicDbContext db, Guid id, IMusicRepository repo)
         {
-            var album = repo.GetAlbumById(db, id);
+            var album = await repo.GetAlbumById(db, id);
             return album is null ? Results.NotFound() : Results.Ok(album);
         }
     }
