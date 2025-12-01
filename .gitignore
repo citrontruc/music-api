@@ -58,3 +58,6 @@ nunit-*.xml
 
 # Properties
 [Pp]roperties/*
+
+# config files
+.config/*

@@ -4,7 +4,7 @@
 
 ## Description
 
-A simple API in dotnet to store albums and let you consult these albums. It stores data in sqllite and uses scalar for documentation.
+A simple API in dotnet to store albums and let you consult these albums. It stores data in sqllite and uses scalar for documentation. Linting is handled with csharpier.
 
 ## Files & Folders
 
