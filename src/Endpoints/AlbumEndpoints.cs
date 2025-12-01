@@ -65,18 +65,22 @@ namespace MusicDatabaseApi.Endpoints
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return Results.Ok( await repo.GetAlbumsByName(db, name, pageSize, pageNumber));
+                return Results.Ok(await repo.GetAlbumsByName(db, name, pageSize, pageNumber));
             }
 
             if (!string.IsNullOrWhiteSpace(artist))
             {
-                return Results.Ok( await repo.GetAlbumsByArtist(db, artist, pageSize, pageNumber));
+                return Results.Ok(await repo.GetAlbumsByArtist(db, artist, pageSize, pageNumber));
             }
 
-            return Results.Ok( await repo.GetAllAlbums(db, pageSize, pageNumber));
+            return Results.Ok(await repo.GetAllAlbums(db, pageSize, pageNumber));
         }
 
-        private async static Task<IResult> GetAlbumById(MusicDbContext db, Guid id, IMusicRepository repo)
+        private static async Task<IResult> GetAlbumById(
+            MusicDbContext db,
+            Guid id,
+            IMusicRepository repo
+        )
         {
             var album = await repo.GetAlbumById(db, id);
             return album is null ? Results.NotFound() : Results.Ok(album);

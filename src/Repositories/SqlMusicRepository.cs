@@ -34,7 +34,11 @@ namespace MusicDatabaseApi.Repositories
             return album;
         }
 
-        public async Task<IEnumerable<Album>> GetAllAlbums(MusicDbContext db, int? pageSize, int? pageNumber)
+        public async Task<IEnumerable<Album>> GetAllAlbums(
+            MusicDbContext db,
+            int? pageSize,
+            int? pageNumber
+        )
         {
             (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
                 pageSize,
