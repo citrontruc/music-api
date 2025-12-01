@@ -55,3 +55,6 @@ nunit-*.xml
 
 # Db files
 *.db
+
+# Properties
+Properties/*
