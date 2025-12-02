@@ -1,15 +1,13 @@
 /*
 A class to add the endpoints to add albums to our database.
 */
-
+using System.Threading.Tasks;
+using MusicDatabaseApi.Models;
+using MusicDatabaseApi.Repositories;
 using MusicDatabaseApi.Data;
 
 namespace MusicDatabaseApi.Endpoints
 {
-    using System.Threading.Tasks;
-    using MusicDatabaseApi.Models;
-    using MusicDatabaseApi.Repositories;
-
     public static class AlbumEndpoints
     {
         /// <summary>

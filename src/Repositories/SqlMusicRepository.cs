@@ -2,12 +2,11 @@
 A class to store our albums in memory.
 */
 using Microsoft.EntityFrameworkCore;
+using MusicDatabaseApi.Data;
+using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Repositories
 {
-    using MusicDatabaseApi.Data;
-    using MusicDatabaseApi.Models;
-
     public class SqlMusicRepository : IMusicRepository
     {
         private AlbumParameters _defaultAlbumParameters;

@@ -1,9 +1,8 @@
 using MusicDatabaseApi.Data;
+using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Repositories
 {
-    using MusicDatabaseApi.Models;
-
     public interface IMusicRepository
     {
         Task<Album> CreateAlbum(MusicDbContext db, CreateAlbumRequest request);
