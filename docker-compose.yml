@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_URLS: "http://0.0.0.0:5158"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5158:5158"
+    expose:
+      - '5158'
