@@ -11,22 +11,23 @@ public class AlbumParameters : QueryStringParameters
     /// <param name="pageSize">Number of records asked by the user</param>
     /// <param name="pageNumber">Initial page asked by the user</param>
     /// <returns></returns>
-    public static  (int, int) CorrectPaginationParameters(AlbumParameters albumParameters, int? pageSize, int? pageNumber)
+    public static (int, int) CorrectPaginationParameters(
+        AlbumParameters albumParameters,
+        int? pageSize,
+        int? pageNumber
+    )
     {
         int interPageSize = pageSize ?? albumParameters.PageSize;
         int interPageNumber = pageNumber ?? albumParameters.PageNumber;
         int correctPageSize =
-            (albumParameters.PageSize >= interPageSize)
-                ? interPageSize
-                : albumParameters.PageSize;
+            (albumParameters.PageSize >= interPageSize) ? interPageSize : albumParameters.PageSize;
         int correctPageNumber =
             (
                 albumParameters.PageNumber * albumParameters.PageSize
                 >= interPageNumber * correctPageSize
             )
                 ? interPageNumber
-                : albumParameters.PageNumber * albumParameters.PageSize
-                    - correctPageSize;
+                : albumParameters.PageNumber * albumParameters.PageSize - correctPageSize;
         return (correctPageSize, correctPageNumber);
     }
 }

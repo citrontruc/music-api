@@ -42,11 +42,12 @@ namespace MusicDatabaseApi.Repositories
             int? pageNumber
         )
         {
-            (int correctPageSize, int correctPageNumber) = AlbumParameters.CorrectPaginationParameters(
-                _defaultAlbumParameters,
-                pageSize,
-                pageNumber
-            );
+            (int correctPageSize, int correctPageNumber) =
+                AlbumParameters.CorrectPaginationParameters(
+                    _defaultAlbumParameters,
+                    pageSize,
+                    pageNumber
+                );
 
             return await PagedList<Album>.ToPagedListAsync(
                 db.Albums.AsNoTracking().OrderBy(a => a.ArtistName).ThenBy(a => a.Name),
@@ -69,11 +70,12 @@ namespace MusicDatabaseApi.Repositories
             int? pageNumber
         )
         {
-            (int correctPageSize, int correctPageNumber) = AlbumParameters.CorrectPaginationParameters(
-                _defaultAlbumParameters,
-                pageSize,
-                pageNumber
-            );
+            (int correctPageSize, int correctPageNumber) =
+                AlbumParameters.CorrectPaginationParameters(
+                    _defaultAlbumParameters,
+                    pageSize,
+                    pageNumber
+                );
             return await PagedList<Album>.ToPagedListAsync(
                 db.Albums.Where(a => a.Name.ToLower().Contains(name.ToLower()))
                     .OrderBy(a => a.Name)
@@ -90,11 +92,12 @@ namespace MusicDatabaseApi.Repositories
             int? pageNumber
         )
         {
-            (int correctPageSize, int correctPageNumber) = AlbumParameters.CorrectPaginationParameters(
-                _defaultAlbumParameters,
-                pageSize,
-                pageNumber
-            );
+            (int correctPageSize, int correctPageNumber) =
+                AlbumParameters.CorrectPaginationParameters(
+                    _defaultAlbumParameters,
+                    pageSize,
+                    pageNumber
+                );
             return await PagedList<Album>.ToPagedListAsync(
                 db.Albums.Where(a => a.ArtistName.ToLower().Contains(artistName.ToLower()))
                     .OrderBy(a => a.ArtistName)

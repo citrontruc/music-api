@@ -38,7 +38,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-
 // Security
 app.UseHttpsRedirection();
 
