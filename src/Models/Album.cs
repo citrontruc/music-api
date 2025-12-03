@@ -1,3 +1,7 @@
+/*
+A class to represent an album.
+*/
+
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicDatabaseApi.Models

@@ -1,5 +1,5 @@
 /*
-A class to store our albums in memory.
+A class to store our albums in an SQL database.
 */
 using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
@@ -16,6 +16,7 @@ namespace MusicDatabaseApi.Repositories
             _defaultAlbumParameters = defaultAlbumParameters;
         }
 
+        #region Create requests
         public async Task<Album> CreateAlbum(MusicDbContext db, CreateAlbumRequest request)
         {
             // Note: We save our changes but do not reload our database.
@@ -32,14 +33,17 @@ namespace MusicDatabaseApi.Repositories
 
             return album;
         }
+        #endregion
 
+        #region Get requests
         public async Task<IEnumerable<Album>> GetAllAlbums(
             MusicDbContext db,
             int? pageSize,
             int? pageNumber
         )
         {
-            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
+            (int correctPageSize, int correctPageNumber) = AlbumParameters.CorrectPaginationParameters(
+                _defaultAlbumParameters,
                 pageSize,
                 pageNumber
             );
@@ -65,7 +69,8 @@ namespace MusicDatabaseApi.Repositories
             int? pageNumber
         )
         {
-            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
+            (int correctPageSize, int correctPageNumber) = AlbumParameters.CorrectPaginationParameters(
+                _defaultAlbumParameters,
                 pageSize,
                 pageNumber
             );
@@ -85,7 +90,8 @@ namespace MusicDatabaseApi.Repositories
             int? pageNumber
         )
         {
-            (int correctPageSize, int correctPageNumber) = CorrectPaginationParameters(
+            (int correctPageSize, int correctPageNumber) = AlbumParameters.CorrectPaginationParameters(
+                _defaultAlbumParameters,
                 pageSize,
                 pageNumber
             );
@@ -97,24 +103,6 @@ namespace MusicDatabaseApi.Repositories
                 correctPageNumber
             );
         }
-
-        private (int, int) CorrectPaginationParameters(int? pageSize, int? pageNumber)
-        {
-            int interPageSize = pageSize ?? _defaultAlbumParameters.PageSize;
-            int interPageNumber = pageNumber ?? _defaultAlbumParameters.PageNumber;
-            int correctPageSize =
-                (_defaultAlbumParameters.PageSize >= interPageSize)
-                    ? interPageSize
-                    : _defaultAlbumParameters.PageSize;
-            int correctPageNumber =
-                (
-                    _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
-                    >= interPageNumber * correctPageSize
-                )
-                    ? interPageNumber
-                    : _defaultAlbumParameters.PageNumber * _defaultAlbumParameters.PageSize
-                        - correctPageSize;
-            return (correctPageSize, correctPageNumber);
-        }
+        #endregion
     }
 }

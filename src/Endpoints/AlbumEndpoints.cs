@@ -10,6 +10,7 @@ namespace MusicDatabaseApi.Endpoints
 {
     public static class AlbumEndpoints
     {
+        #region Create Endpoints
         /// <summary>
         /// Extension of the app in order to add endpoints to retrieve albums
         /// </summary>
@@ -33,7 +34,9 @@ namespace MusicDatabaseApi.Endpoints
                 .WithName("GetAlbumById")
                 .WithSummary("Get a specific album by ID");
         }
+        #endregion
 
+        #region Resolve endpoints
         private static async Task<IResult> CreateAlbum(
             MusicDbContext db,
             CreateAlbumRequest request,
@@ -83,5 +86,6 @@ namespace MusicDatabaseApi.Endpoints
             var album = await repo.GetAlbumById(db, id);
             return album is null ? Results.NotFound() : Results.Ok(album);
         }
+        #endregion
     }
 }

@@ -4,14 +4,17 @@
 
 ## Description
 
-A simple API in dotnet to store albums and let you consult these albums. It stores data in sqllite and uses scalar for documentation. Linting is handled with csharpier.
+A simple API in dotnet to store albums and let you consult these albums in a database. We have no delete / put or patch methods for now.
+
+It stores data in sqllite and uses scalar for documentation. Linting is handled with csharpier.
 
 ## Files & Folders
 
+- Database contains database context and code to access our database.
 - Endpoints folder defines all the endpoinnts of the application.
 - Models to define the objects we manipulate.
-- Repositories
-- Utils for helpers
+- Repositories to implement repository pattern.
+- Utils for helpers.
 
 ## Run the api
 
@@ -27,4 +30,3 @@ In order to have a look at the documentation, got to the /scalar endpoint, you w
 
 - Add Endpoints for groups / songs.
 - Add tests.
-- Making things async would be cool.

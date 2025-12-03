@@ -1,3 +1,6 @@
+/*
+An interface to implement the repository pattern for our albums.
+*/
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
 

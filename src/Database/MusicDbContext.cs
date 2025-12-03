@@ -1,3 +1,7 @@
+/*
+A DbContext to store albums in a database
+*/
+
 using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Models;
 

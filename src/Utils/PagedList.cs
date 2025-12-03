@@ -22,6 +22,7 @@ public class PagedList<T> : List<T>
         AddRange(items);
     }
 
+    #region Conversion methods
     public static PagedList<T> ToPagedList(IQueryable<T> source, int pageSize, int pageNumber)
     {
         var count = source.Count();
@@ -46,4 +47,5 @@ public class PagedList<T> : List<T>
         var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         return new PagedList<T>(items, count, pageNumber, pageSize);
     }
+    #endregion
 }

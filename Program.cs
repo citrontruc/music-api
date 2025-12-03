@@ -11,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+#region Declaration of services
+
 /// Be very careful, we have two different IMUsicRepository
 /// We must specify which one to use.
 builder.Services.AddScoped<IMusicRepository, SqlMusicRepository>();
@@ -20,6 +22,8 @@ builder.Services.AddSingleton<AlbumParameters, AlbumParameters>();
 builder.Services.AddDbContext<MusicDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+#endregion
 
 var app = builder.Build();
 
@@ -34,11 +38,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+
+// Security
 app.UseHttpsRedirection();
 
 // Map all album endpoints
 app.MapAlbumEndpoints();
 
+// Create database if it doesn't exist
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
