@@ -1,6 +1,15 @@
 # Music Api
 
-**Work in progress**
+This is a **Work in progress**
+
+## Table of content
+
+- [Music Api](#music-api)
+  - [Table of content](#table-of-content)
+  - [Description](#description)
+  - [Files \& Folders](#files--folders)
+  - [Run the api](#run-the-api)
+  - [TODO](#todo)
 
 ## Description
 
@@ -30,3 +39,4 @@ In order to have a look at the documentation, got to the /scalar endpoint, you w
 
 - Add Endpoints for groups / songs.
 - Add tests.
+- Add cache of data

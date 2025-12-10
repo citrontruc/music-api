@@ -1,7 +1,7 @@
 /*
 A class to add the endpoints to add albums to our database.
 */
-using System.Threading.Tasks;
+
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
 using MusicDatabaseApi.Repositories;
