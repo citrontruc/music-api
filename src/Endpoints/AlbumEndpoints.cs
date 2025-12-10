@@ -17,7 +17,8 @@ namespace MusicDatabaseApi.Endpoints
         /// <param name="app"></param>
         public static void MapAlbumEndpoints(this WebApplication app)
         {
-            var group = app.MapGroup("/api/albums").WithTags("Albums");
+            // We need to be authenticated in order to interact with the api.
+            var group = app.MapGroup("/api/albums").WithTags("Albums").RequireAuthorization();
 
             group
                 .MapPost("/", CreateAlbum)

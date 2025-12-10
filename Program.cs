@@ -10,10 +10,12 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
 
 #region Declaration of services
 
-/// Be very careful, we have two different IMUsicRepository
+/// Be very careful, if you have multiple IMUsicRepository
 /// We must specify which one to use.
 builder.Services.AddScoped<IMusicRepository, SqlMusicRepository>();
 builder.Services.AddSingleton<AlbumParameters, AlbumParameters>();
@@ -26,6 +28,10 @@ builder.Services.AddDbContext<MusicDbContext>(options =>
 #endregion
 
 var app = builder.Build();
+
+// Authentication
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
