@@ -1,11 +1,10 @@
 /*
 A class to store our albums in an SQL database.
 */
+using ListPagination;
 using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
-
-using ListPagination;
 
 namespace MusicDatabaseApi.Repositories
 {
