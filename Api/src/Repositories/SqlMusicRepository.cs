@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
 
+using ListPagination;
+
 namespace MusicDatabaseApi.Repositories
 {
     public class SqlMusicRepository : IMusicRepository
