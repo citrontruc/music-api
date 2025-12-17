@@ -14,20 +14,30 @@ var builder = WebApplication.CreateBuilder(args);
 #region General services
 
 // Logs are written to files (simple file for base logs and special file for errors) and to console.
+/*
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.Console()
     .WriteTo.File(
         path: "logs/app-.log",
         rollingInterval: RollingInterval.Day,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+        retainedFileCountLimit: 7
     )
     .WriteTo.File(
         "logs/errors-.log",
         rollingInterval: RollingInterval.Day,
         outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-        restrictedToMinimumLevel: LogEventLevel.Error
+        restrictedToMinimumLevel: LogEventLevel.Error,
+        retainedFileCountLimit: 7
     )
+    .CreateLogger();
+*/
+
+// Instead of putting configuration in code, put it in appsettings.
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
     .CreateLogger();
 
 // Use Serilog as the logging provider
