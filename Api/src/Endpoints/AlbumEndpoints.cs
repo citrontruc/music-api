@@ -51,6 +51,9 @@ namespace MusicDatabaseApi.Endpoints
                 .MapGet("/{id:guid}", GetAlbumById)
                 .WithName("GetAlbumById")
                 .WithSummary("Get a specific album by ID")
+                .WithDescription(
+                    "Queries the album with the corresponding id from the database and retrieves its information."
+                )
                 .MapToApiVersion(2);
         }
         #endregion

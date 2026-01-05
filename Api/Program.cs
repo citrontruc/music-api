@@ -9,34 +9,13 @@ using MusicDatabaseApi.Endpoints;
 using MusicDatabaseApi.Repositories;
 using Scalar.AspNetCore;
 using Serilog;
-using Serilog.Events;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region General services
 
-// Logs are written to files (simple file for base logs and special file for errors) and to console.
-/*
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .WriteTo.Console()
-    .WriteTo.File(
-        path: "logs/app-.log",
-        rollingInterval: RollingInterval.Day,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-        retainedFileCountLimit: 7
-    )
-    .WriteTo.File(
-        "logs/errors-.log",
-        rollingInterval: RollingInterval.Day,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-        restrictedToMinimumLevel: LogEventLevel.Error,
-        retainedFileCountLimit: 7
-    )
-    .CreateLogger();
-*/
-
-// Instead of putting configuration in code, put it in appsettings.
+// Configure logger
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
@@ -45,13 +24,8 @@ Log.Logger = new LoggerConfiguration()
 // Use Serilog as the logging provider
 builder.Host.UseSerilog();
 
-// Documentation
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<OpenApiVersionTransformer>();
-});
-
-// Api versioning
+// Api versioning.
+// Do this before documentation or multiple versions might be ignored.
 builder
     .Services.AddApiVersioning(options =>
     {
@@ -63,9 +37,19 @@ builder
     .AddApiExplorer(options =>
     {
         options.GroupNameFormat = "'v'V";
-        // This is pureluy for doc: replaces version number in url for cleaner doc
+        // note: this option is only necessary when versioning by url segment.
+        // This is for doc: replaces version number in url for cleaner doc
         options.SubstituteApiVersionInUrl = true;
     });
+
+// builder.Services.AddEndpointsApiExplorer();
+
+// Documentation
+// If you don't have these lines, no operations are marked.
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<OpenApiVersionTransformer>();
+});
 
 // Security
 builder.Services.AddAuthentication().AddJwtBearer();
@@ -76,6 +60,26 @@ builder.Services.AddProblemDetails();
 #endregion
 
 #region Declaration of services
+
+builder.Services.AddSwaggerGen(options =>
+{
+    // Create a Swagger document for each discovered API version
+    var provider = builder
+        .Services.BuildServiceProvider()
+        .GetRequiredService<IApiVersionDescriptionProvider>();
+
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc(
+            description.GroupName,
+            new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = "Music Database API",
+                Version = description.ApiVersion.ToString(),
+            }
+        );
+    }
+});
 
 /// Be very careful, if you have multiple IMUsicRepository
 /// We must specify which one to use.
@@ -103,14 +107,45 @@ app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Security
+app.UseHttpsRedirection();
+
+// Map all album endpoints
+app.MapAlbumEndpoints();
+
+// Create database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
+    context.Database.EnsureCreated();
+}
+
+app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
-    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+    var descriptions = app.DescribeApiVersions();
+    foreach (var description in descriptions)
+    {
+        app.MapOpenApi($"/openapi/{description.GroupName}.json")
+            .WithGroupName(description.GroupName);
+    }
 
+    app.UseSwaggerUI(options =>
+    {
+        var descriptions = app.DescribeApiVersions();
+        foreach (var description in descriptions)
+        {
+            var url = $"/swagger/{description.GroupName}/swagger.json";
+            var name = description.GroupName.ToUpperInvariant();
+            options.SwaggerEndpoint(url, name);
+        }
+    });
+    /*
     // Map OpenAPI specs for each version. This is the building block.
     // Scalar and swagger use openAPI as base.
     foreach (var description in provider.ApiVersionDescriptions)
     {
+        Console.WriteLine($"API Version {description.GroupName}");
         app.MapOpenApi($"/openapi/{description.GroupName}.json")
             .WithGroupName(description.GroupName);
 
@@ -133,19 +168,7 @@ if (app.Environment.IsDevelopment())
             );
         });
     }
-}
-
-// Security
-app.UseHttpsRedirection();
-
-// Map all album endpoints
-app.MapAlbumEndpoints();
-
-// Create database if it doesn't exist
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
-    context.Database.EnsureCreated();
+    */
 }
 
 #endregion
