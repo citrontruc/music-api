@@ -20,8 +20,9 @@ namespace MusicDatabaseApi.Endpoints
         public static void MapAlbumEndpoints(this WebApplication app)
         {
             ApiVersionSet apiVersionSet = app.NewApiVersionSet()
-                .HasApiVersion(new ApiVersion(1))
+                .HasDeprecatedApiVersion(new ApiVersion(1)) // Can't input v0
                 .HasApiVersion(new ApiVersion(2))
+                .HasApiVersion(new ApiVersion(3))
                 .ReportApiVersions()
                 .Build();
 
@@ -38,14 +39,15 @@ namespace MusicDatabaseApi.Endpoints
                 .WithName("CreateAlbum")
                 .WithSummary("Create a new album")
                 .MapToApiVersion(1)
-                .MapToApiVersion(2);
+                .MapToApiVersion(2)
+                .MapToApiVersion(3);
 
             group
                 .MapGet("/", GetAlbums)
                 .WithName("GetAlbums")
                 .WithSummary("Get all albums or search by name/artist")
-                .MapToApiVersion(1)
-                .MapToApiVersion(2);
+                .MapToApiVersion(2)
+                .MapToApiVersion(3);
 
             group
                 .MapGet("/{id:guid}", GetAlbumById)
@@ -54,7 +56,7 @@ namespace MusicDatabaseApi.Endpoints
                 .WithDescription(
                     "Queries the album with the corresponding id from the database and retrieves its information."
                 )
-                .MapToApiVersion(2);
+                .MapToApiVersion(3);
         }
         #endregion
 

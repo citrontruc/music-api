@@ -9,7 +9,6 @@ using MusicDatabaseApi.Endpoints;
 using MusicDatabaseApi.Repositories;
 using Scalar.AspNetCore;
 using Serilog;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +28,7 @@ builder.Host.UseSerilog();
 builder
     .Services.AddApiVersioning(options =>
     {
-        options.DefaultApiVersion = new ApiVersion(2);
+        options.DefaultApiVersion = new ApiVersion(3);
         options.ReportApiVersions = true;
         options.AssumeDefaultVersionWhenUnspecified = true;
         options.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader());
@@ -42,44 +41,27 @@ builder
         options.SubstituteApiVersionInUrl = true;
     });
 
-// builder.Services.AddEndpointsApiExplorer();
-
-// Documentation
-// If you don't have these lines, no operations are marked.
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<OpenApiVersionTransformer>();
-});
-
 // Security
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.AddAuthorization();
 
 builder.Services.AddProblemDetails();
 
+// Documentation
+// If you don't have these lines, no operations are marked in swagger.
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<ConfigureOpenApiOptions>();
+});
+
+builder.Services.AddSwaggerGen();
+
+// Options and configuration of swagger are handled by our ConfigureSwaggerOptions
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
 #endregion
 
 #region Declaration of services
-
-builder.Services.AddSwaggerGen(options =>
-{
-    // Create a Swagger document for each discovered API version
-    var provider = builder
-        .Services.BuildServiceProvider()
-        .GetRequiredService<IApiVersionDescriptionProvider>();
-
-    foreach (var description in provider.ApiVersionDescriptions)
-    {
-        options.SwaggerDoc(
-            description.GroupName,
-            new Microsoft.OpenApi.Models.OpenApiInfo
-            {
-                Title = "Music Database API",
-                Version = description.ApiVersion.ToString(),
-            }
-        );
-    }
-});
 
 /// Be very careful, if you have multiple IMUsicRepository
 /// We must specify which one to use.
@@ -126,7 +108,7 @@ if (app.Environment.IsDevelopment())
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
     {
-        app.MapOpenApi($"/openapi/{description.GroupName}.json")
+        app.MapOpenApi($"/openapi/{description.GroupName}/openapi.json")
             .WithGroupName(description.GroupName);
     }
 
