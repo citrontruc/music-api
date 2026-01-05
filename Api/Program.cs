@@ -1,6 +1,8 @@
 /*
 The entry point to our program.
 */
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Endpoints;
@@ -44,7 +46,26 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Documentation
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<OpenApiVersionTransformer>();
+});
+
+// Api versioning
+builder
+    .Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(2);
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader());
+    })
+    .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'V";
+        // This is pureluy for doc: replaces version number in url for cleaner doc
+        options.SubstituteApiVersionInUrl = true;
+    });
 
 // Security
 builder.Services.AddAuthentication().AddJwtBearer();
@@ -84,13 +105,34 @@ app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-    // Use this line because openAPI does not generate swagger by default.
-    app.UseSwaggerUI(options =>
+    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+    // Map OpenAPI specs for each version. This is the building block.
+    // Scalar and swagger use openAPI as base.
+    foreach (var description in provider.ApiVersionDescriptions)
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "Music API");
-    });
+        app.MapOpenApi($"/openapi/{description.GroupName}.json")
+            .WithGroupName(description.GroupName);
+
+        // Configure Scalar to accept multiple versions
+        app.MapScalarApiReference(options =>
+        {
+            options
+                .WithTitle("Music Database API")
+                .WithTheme(ScalarTheme.Default)
+                .WithOpenApiRoutePattern($"/openapi/{description.GroupName}.json");
+            ;
+        });
+
+        // You don't need both swagger and scalar but here is both if you need it.
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint(
+                $"/openapi/{description.GroupName}.json",
+                description.GroupName.ToUpperInvariant()
+            );
+        });
+    }
 }
 
 // Security

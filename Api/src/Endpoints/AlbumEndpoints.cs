@@ -2,6 +2,8 @@
 A class to add the endpoints to add albums to our database.
 */
 
+using Asp.Versioning;
+using Asp.Versioning.Builder;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
 using MusicDatabaseApi.Repositories;
@@ -17,23 +19,39 @@ namespace MusicDatabaseApi.Endpoints
         /// <param name="app"></param>
         public static void MapAlbumEndpoints(this WebApplication app)
         {
+            ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+                .HasApiVersion(new ApiVersion(1))
+                .HasApiVersion(new ApiVersion(2))
+                .ReportApiVersions()
+                .Build();
+
             // We need to be authenticated in order to interact with the api.
-            var group = app.MapGroup("/api/albums").WithTags("Albums").RequireAuthorization();
+            var group = app.MapGroup("api/v{version:apiVersion}/albums")
+                .WithApiVersionSet(apiVersionSet)
+                .WithTags("Albums")
+                //.HasApiVersion(1) // Map to V1
+                //.HasApiVersion(2) // Map to V2
+                .RequireAuthorization();
 
             group
                 .MapPost("/", CreateAlbum)
                 .WithName("CreateAlbum")
-                .WithSummary("Create a new album");
+                .WithSummary("Create a new album")
+                .MapToApiVersion(1)
+                .MapToApiVersion(2);
 
             group
                 .MapGet("/", GetAlbums)
                 .WithName("GetAlbums")
-                .WithSummary("Get all albums or search by name/artist");
+                .WithSummary("Get all albums or search by name/artist")
+                .MapToApiVersion(1)
+                .MapToApiVersion(2);
 
             group
                 .MapGet("/{id:guid}", GetAlbumById)
                 .WithName("GetAlbumById")
-                .WithSummary("Get a specific album by ID");
+                .WithSummary("Get a specific album by ID")
+                .MapToApiVersion(2);
         }
         #endregion
 
