@@ -17,6 +17,8 @@ A simple API in dotnet to store albums and let you consult these albums in a dat
 
 It stores data in sqllite and uses scalar for documentation. Linting is handled with csharpier.
 
+This is meant as an exercise in order to get comfortable with api versioning, asynchronous calls, api endpoints...
+
 ## Files & Folders
 
 - Database contains database context and code to access our database.

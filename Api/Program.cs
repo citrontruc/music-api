@@ -105,6 +105,7 @@ app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
     /*
+    // While swagger works, openapi doesn't. You can't have both.
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
     {
