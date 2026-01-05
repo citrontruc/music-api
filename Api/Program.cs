@@ -2,7 +2,6 @@
 The entry point to our program.
 */
 using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Endpoints;
@@ -105,12 +104,14 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
+    /*
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
     {
         app.MapOpenApi($"/openapi/{description.GroupName}/openapi.json")
             .WithGroupName(description.GroupName);
     }
+    */
 
     app.UseSwaggerUI(options =>
     {
@@ -123,34 +124,13 @@ if (app.Environment.IsDevelopment())
         }
     });
     /*
-    // Map OpenAPI specs for each version. This is the building block.
-    // Scalar and swagger use openAPI as base.
-    foreach (var description in provider.ApiVersionDescriptions)
-    {
-        Console.WriteLine($"API Version {description.GroupName}");
-        app.MapOpenApi($"/openapi/{description.GroupName}.json")
-            .WithGroupName(description.GroupName);
-
-        // Configure Scalar to accept multiple versions
         app.MapScalarApiReference(options =>
         {
-            options
-                .WithTitle("Music Database API")
-                .WithTheme(ScalarTheme.Default)
-                .WithOpenApiRoutePattern($"/openapi/{description.GroupName}.json");
-            ;
+            options.WithTitle("Music Database API")
+                   .WithTheme(ScalarTheme.Default)
+                   .WithOpenApiRoutePattern("/openapi/{documentName}/openapi.json");
         });
-
-        // You don't need both swagger and scalar but here is both if you need it.
-        app.UseSwaggerUI(options =>
-        {
-            options.SwaggerEndpoint(
-                $"/openapi/{description.GroupName}.json",
-                description.GroupName.ToUpperInvariant()
-            );
-        });
-    }
-    */
+        */
 }
 
 #endregion
