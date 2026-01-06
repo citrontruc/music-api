@@ -2,7 +2,7 @@
 Paramaters for our Albums
 */
 
-public class AlbumParameters : QueryStringParameters
+public class PaginationParameters : QueryStringParameters
 {
     /// <summary>
     /// A method to check that the pages asked by the user follow pagination rules.
@@ -12,22 +12,24 @@ public class AlbumParameters : QueryStringParameters
     /// <param name="pageNumber">Initial page asked by the user</param>
     /// <returns></returns>
     public static (int, int) CorrectPaginationParameters(
-        AlbumParameters albumParameters,
+        PaginationParameters paginationParameters,
         int? pageSize,
         int? pageNumber
     )
     {
-        int interPageSize = pageSize ?? albumParameters.PageSize;
-        int interPageNumber = pageNumber ?? albumParameters.PageNumber;
+        int interPageSize = pageSize ?? paginationParameters.PageSize;
+        int interPageNumber = pageNumber ?? paginationParameters.PageNumber;
         int correctPageSize =
-            (albumParameters.PageSize >= interPageSize) ? interPageSize : albumParameters.PageSize;
+            (paginationParameters.PageSize >= interPageSize)
+                ? interPageSize
+                : paginationParameters.PageSize;
         int correctPageNumber =
             (
-                albumParameters.PageNumber * albumParameters.PageSize
+                paginationParameters.PageNumber * paginationParameters.PageSize
                 >= interPageNumber * correctPageSize
             )
                 ? interPageNumber
-                : albumParameters.PageNumber * albumParameters.PageSize - correctPageSize;
+                : paginationParameters.PageNumber * paginationParameters.PageSize - correctPageSize;
         return (correctPageSize, correctPageNumber);
     }
 }

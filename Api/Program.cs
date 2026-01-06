@@ -64,8 +64,9 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 /// Be very careful, if you have multiple IMUsicRepository
 /// We must specify which one to use.
-builder.Services.AddScoped<IMusicRepository, SqlMusicRepository>();
-builder.Services.AddSingleton<AlbumParameters, AlbumParameters>();
+builder.Services.AddScoped<IAlbumRepository, SqlAlbumRepository>();
+builder.Services.AddScoped<IArtistRepository, SqlArtistRepository>();
+builder.Services.AddSingleton<PaginationParameters, PaginationParameters>();
 
 // You need a valid connection string in the app setting for it to create a .db file.
 builder.Services.AddDbContext<MusicDbContext>(options =>
@@ -93,6 +94,7 @@ app.UseHttpsRedirection();
 
 // Map all album endpoints
 app.MapAlbumEndpoints();
+app.MapArtistEndpoints();
 
 // Create database if it doesn't exist
 using (var scope = app.Services.CreateScope())

@@ -8,17 +8,17 @@ using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Repositories
 {
-    public class SqlMusicRepository : IMusicRepository
+    public class SqlAlbumRepository : IAlbumRepository
     {
-        private AlbumParameters _defaultAlbumParameters;
+        private PaginationParameters _defaultPaginationParameters;
 
-        public SqlMusicRepository(AlbumParameters defaultAlbumParameters)
+        public SqlAlbumRepository(PaginationParameters defaultPaginationParameters)
         {
-            _defaultAlbumParameters = defaultAlbumParameters;
+            _defaultPaginationParameters = defaultPaginationParameters;
         }
 
         #region Create requests
-        public async Task<Album> CreateAlbum(MusicDbContext db, CreateAlbumRequest request)
+        public async Task<Album> Create(MusicDbContext db, CreateAlbumRequest request)
         {
             // Note: We save our changes but do not reload our database.
             var album = new Album(
@@ -38,15 +38,15 @@ namespace MusicDatabaseApi.Repositories
         #endregion
 
         #region Get requests
-        public async Task<IEnumerable<Album>> GetAllAlbums(
+        public async Task<IEnumerable<Album>> GetAll(
             MusicDbContext db,
             int? pageSize,
             int? pageNumber
         )
         {
             (int correctPageSize, int correctPageNumber) =
-                AlbumParameters.CorrectPaginationParameters(
-                    _defaultAlbumParameters,
+                PaginationParameters.CorrectPaginationParameters(
+                    _defaultPaginationParameters,
                     pageSize,
                     pageNumber
                 );
@@ -58,14 +58,14 @@ namespace MusicDatabaseApi.Repositories
             );
         }
 
-        public async Task<Album?> GetAlbumById(MusicDbContext db, Guid id)
+        public async Task<Album?> GetById(MusicDbContext db, Guid id)
         {
             Album? album = await db.Albums.FirstOrDefaultAsync(a => a.Id == id);
             ;
             return album;
         }
 
-        public async Task<IEnumerable<Album>> GetAlbumsByName(
+        public async Task<IEnumerable<Album>> GetByName(
             MusicDbContext db,
             string name,
             int? pageSize,
@@ -73,8 +73,8 @@ namespace MusicDatabaseApi.Repositories
         )
         {
             (int correctPageSize, int correctPageNumber) =
-                AlbumParameters.CorrectPaginationParameters(
-                    _defaultAlbumParameters,
+                PaginationParameters.CorrectPaginationParameters(
+                    _defaultPaginationParameters,
                     pageSize,
                     pageNumber
                 );
@@ -87,7 +87,7 @@ namespace MusicDatabaseApi.Repositories
             );
         }
 
-        public async Task<IEnumerable<Album>> GetAlbumsByArtist(
+        public async Task<IEnumerable<Album>> GetByArtist(
             MusicDbContext db,
             string artistName,
             int? pageSize,
@@ -95,8 +95,8 @@ namespace MusicDatabaseApi.Repositories
         )
         {
             (int correctPageSize, int correctPageNumber) =
-                AlbumParameters.CorrectPaginationParameters(
-                    _defaultAlbumParameters,
+                PaginationParameters.CorrectPaginationParameters(
+                    _defaultPaginationParameters,
                     pageSize,
                     pageNumber
                 );

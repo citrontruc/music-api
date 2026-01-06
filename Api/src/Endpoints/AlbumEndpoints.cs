@@ -64,7 +64,7 @@ namespace MusicDatabaseApi.Endpoints
         private static async Task<IResult> CreateAlbum(
             MusicDbContext db,
             CreateAlbumRequest request,
-            IMusicRepository repo
+            IAlbumRepository repo
         )
         {
             if (
@@ -75,7 +75,7 @@ namespace MusicDatabaseApi.Endpoints
                 return Results.BadRequest("Album name and artist name are required.");
             }
 
-            var album = await repo.CreateAlbum(db, request);
+            var album = await repo.Create(db, request);
             return Results.Created($"/api/albums/{album.Id}", album);
         }
 
@@ -85,29 +85,29 @@ namespace MusicDatabaseApi.Endpoints
             string? artist,
             int? pageSize,
             int? pageNumber,
-            IMusicRepository repo
+            IAlbumRepository repo
         )
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return Results.Ok(await repo.GetAlbumsByName(db, name, pageSize, pageNumber));
+                return Results.Ok(await repo.GetByName(db, name, pageSize, pageNumber));
             }
 
             if (!string.IsNullOrWhiteSpace(artist))
             {
-                return Results.Ok(await repo.GetAlbumsByArtist(db, artist, pageSize, pageNumber));
+                return Results.Ok(await repo.GetByArtist(db, artist, pageSize, pageNumber));
             }
 
-            return Results.Ok(await repo.GetAllAlbums(db, pageSize, pageNumber));
+            return Results.Ok(await repo.GetAll(db, pageSize, pageNumber));
         }
 
         private static async Task<IResult> GetAlbumById(
             MusicDbContext db,
             Guid id,
-            IMusicRepository repo
+            IAlbumRepository repo
         )
         {
-            var album = await repo.GetAlbumById(db, id);
+            var album = await repo.GetById(db, id);
             return album is null ? Results.NotFound() : Results.Ok(album);
         }
         #endregion
