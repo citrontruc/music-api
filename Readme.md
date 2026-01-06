@@ -39,6 +39,11 @@ In order to have a look at the documentation, got to the /scalar endpoint, you w
 
 ## TODO
 
-- Add Endpoints for groups / songs.
+- Try to migrate doc to scalar.
+- Separate endpoint registering from endpoint logic.
+- Add Global filters to remove search elements marked for deletion.
+- Interations between artists and albums (Add artists if does no exist).
+- Make artists and albums case insensitive.
+
 - Add tests.
 - Add cache of data
