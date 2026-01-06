@@ -27,7 +27,8 @@ namespace MusicDatabaseApi.Repositories
                 ArtistName: request.ArtistName,
                 ReleaseYear: request.ReleaseYear,
                 Genre: request.Genre,
-                CreatedAt: DateTime.UtcNow
+                CreatedAt: DateTime.UtcNow,
+                IsDeleted: false
             );
             await db.Albums.AddAsync(album);
             db.SaveChanges();

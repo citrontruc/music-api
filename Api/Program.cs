@@ -98,7 +98,7 @@ app.MapAlbumEndpoints();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
-    context.Database.EnsureCreated();
+    // context.Database.EnsureCreated(); // Don't do that, that is a very bad practice. Use migrations.
 }
 
 app.UseSwagger();

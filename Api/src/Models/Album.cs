@@ -12,6 +12,7 @@ namespace MusicDatabaseApi.Models
         [Required] [StringLength(100)] string ArtistName,
         int ReleaseYear,
         string Genre,
-        [Required] DateTime CreatedAt
+        [Required] DateTime CreatedAt,
+        [Required] bool IsDeleted
     );
 }
