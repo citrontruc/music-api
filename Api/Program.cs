@@ -53,10 +53,11 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer<ConfigureOpenApiOptions>();
 });
 
+// Necessary to generate your swagger file.
 builder.Services.AddSwaggerGen();
 
 // Options and configuration of swagger are handled by our ConfigureSwaggerOptions
-builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+// builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 #endregion
 
@@ -103,10 +104,9 @@ using (var scope = app.Services.CreateScope())
     // context.Database.EnsureCreated(); // Don't do that, that is a very bad practice. Use migrations.
 }
 
-app.UseSwagger();
+//app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
-    /*
     // While swagger works, openapi doesn't. You can't have both.
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
@@ -114,8 +114,8 @@ if (app.Environment.IsDevelopment())
         app.MapOpenApi($"/openapi/{description.GroupName}/openapi.json")
             .WithGroupName(description.GroupName);
     }
-    */
 
+    /*
     app.UseSwaggerUI(options =>
     {
         var descriptions = app.DescribeApiVersions();
@@ -126,14 +126,14 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
-    /*
-        app.MapScalarApiReference(options =>
-        {
-            options.WithTitle("Music Database API")
-                   .WithTheme(ScalarTheme.Default)
-                   .WithOpenApiRoutePattern("/openapi/{documentName}/openapi.json");
-        });
-        */
+    */
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("Music Database API")
+            .WithTheme(ScalarTheme.Default)
+            .WithOpenApiRoutePattern("/openapi/{documentName}/openapi.json");
+    });
 }
 
 #endregion

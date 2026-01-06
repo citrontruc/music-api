@@ -20,6 +20,7 @@ namespace MusicDatabaseApi.Endpoints
         public static void MapArtistEndpoints(this WebApplication app)
         {
             ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+                .HasApiVersion(new ApiVersion(1))
                 .HasApiVersion(new ApiVersion(2))
                 .HasApiVersion(new ApiVersion(3))
                 .ReportApiVersions()
@@ -29,6 +30,7 @@ namespace MusicDatabaseApi.Endpoints
             var group = app.MapGroup("api/v{version:apiVersion}/artists")
                 .WithApiVersionSet(apiVersionSet)
                 .WithTags("Artists")
+                .HasApiVersion(1)
                 .HasApiVersion(2)
                 .HasApiVersion(3)
                 .RequireAuthorization();
