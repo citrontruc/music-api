@@ -37,6 +37,11 @@ namespace MusicDatabaseApi.Endpoints
                     "Queries the album with the corresponding id from the database and retrieves its information."
                 )
                 .MapToApiVersion(3);
+
+            app.MapDelete("albums/{id:guid}", DeleteAlbum)
+                .WithName("Delete Album")
+                .WithSummary("Delete an album given its ID.")
+                .MapToApiVersion(3);
         }
         #endregion
 
@@ -89,6 +94,24 @@ namespace MusicDatabaseApi.Endpoints
         {
             var album = await repo.GetById(db, id);
             return album is null ? Results.NotFound() : Results.Ok(album);
+        }
+
+        private static async Task<IResult> DeleteAlbum(
+            MusicDbContext db,
+            Guid id,
+            IAlbumRepository repo
+        )
+        {
+            var (album, success) = await repo.Delete(db, id);
+            if (album is null)
+            {
+                return Results.NoContent();
+            }
+            return success == 0
+                ? Results.InternalServerError(
+                    new DeletionFailedException($"Could not delete album with ID {id}")
+                )
+                : Results.Ok(album);
         }
         #endregion
     }

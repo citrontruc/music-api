@@ -61,7 +61,7 @@ namespace MusicDatabaseApi.Repositories
         public async Task<Album?> GetById(MusicDbContext db, Guid id)
         {
             Album? album = await db.Albums.FirstOrDefaultAsync(a => a.Id == id);
-            ;
+
             return album;
         }
 
@@ -107,6 +107,29 @@ namespace MusicDatabaseApi.Repositories
                 correctPageSize,
                 correctPageNumber
             );
+        }
+        #endregion
+
+        #region Delete requests
+        public async Task<(Album?, int)> Delete(MusicDbContext db, Guid id)
+        {
+            int success = 0;
+            Album? album = await db.Albums.FirstOrDefaultAsync(a => a.Id == id);
+            if (album != null)
+            {
+                // First approach: soft deletion. Deleted data are instead marked for deletion.
+                // Careful: you need filters to remove deleted elements or Named Query filters.
+                /*
+                success = await db.Albums
+                    .Where(a => a.Id == id)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(u => u.IsDeleted, true));
+                        */
+
+                // Second Approach: True deletion. Go to hell little data.
+                success = await db.Albums.Where(a => a.Id == id).ExecuteDeleteAsync();
+            }
+            return (album, success);
         }
         #endregion
     }

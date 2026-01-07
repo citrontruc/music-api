@@ -23,5 +23,6 @@ namespace MusicDatabaseApi.Repositories
             int? pageSize,
             int? pageNumber
         );
+        Task<(Album?, int)> Delete(MusicDbContext db, Guid id);
     }
 }
