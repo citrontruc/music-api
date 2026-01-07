@@ -94,6 +94,17 @@ app.UseAuthorization();
 // Security
 app.UseHttpsRedirection();
 
+// Apply migrations
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
+    await context.Database.MigrateAsync();
+}
+
+# endregion
+
+#region Declare endpoints
+
 ApiVersionSet apiVersionSet = app.NewApiVersionSet()
     .HasDeprecatedApiVersion(new ApiVersion(1)) // Can't input v0
     .HasApiVersion(new ApiVersion(2))
@@ -111,6 +122,10 @@ RouteGroupBuilder versionGroup = app.MapGroup("api/v{version:apiVersion}/")
 // Map all album endpoints
 versionGroup.MapAlbumEndpoints();
 versionGroup.MapArtistEndpoints();
+
+#endregion
+
+#region Development
 
 if (app.Environment.IsDevelopment())
 {
