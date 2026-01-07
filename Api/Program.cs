@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Endpoints;
 using MusicDatabaseApi.Repositories;
-using Scalar.AspNetCore;
+//using Scalar.AspNetCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,7 +58,7 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddSwaggerGen();
 
 // Options and configuration of swagger are handled by our ConfigureSwaggerOptions
-// builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
 #endregion
 
@@ -112,18 +112,18 @@ RouteGroupBuilder versionGroup = app.MapGroup("api/v{version:apiVersion}/")
 versionGroup.MapAlbumEndpoints();
 versionGroup.MapArtistEndpoints();
 
-//app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
-    // While swagger works, openapi doesn't. You can't have both.
+    /*
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
     {
         app.MapOpenApi($"/openapi/{description.GroupName}/openapi.json")
             .WithGroupName(description.GroupName);
     }
+    */
 
-    /*
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
         var descriptions = app.DescribeApiVersions();
@@ -134,8 +134,8 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
-    */
 
+    /*
     app.MapScalarApiReference(options =>
     {
         options
@@ -143,6 +143,7 @@ if (app.Environment.IsDevelopment())
             .WithTheme(ScalarTheme.Default)
             .WithOpenApiRoutePattern("/openapi/{documentName}/openapi.json");
     });
+    */
 }
 
 #endregion
