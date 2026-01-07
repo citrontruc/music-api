@@ -1,5 +1,5 @@
 /*
-Paramaters for our Albums
+Method for pagination verification.
 */
 
 public class PaginationParameters : QueryStringParameters

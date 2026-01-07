@@ -34,7 +34,7 @@ builder
     })
     .AddApiExplorer(options =>
     {
-        options.GroupNameFormat = "'v'V";
+        options.GroupNameFormat = "'v'VVV";
         // note: this option is only necessary when versioning by url segment.
         // This is for doc: replaces version number in url for cleaner doc
         options.SubstituteApiVersionInUrl = true;
@@ -96,13 +96,6 @@ app.UseHttpsRedirection();
 // Map all album endpoints
 app.MapAlbumEndpoints();
 app.MapArtistEndpoints();
-
-// Create database if it doesn't exist
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
-    // context.Database.EnsureCreated(); // Don't do that, that is a very bad practice. Use migrations.
-}
 
 //app.UseSwagger();
 if (app.Environment.IsDevelopment())
