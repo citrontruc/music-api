@@ -2,8 +2,6 @@
 A class to add the endpoints to add artists to our database.
 */
 
-using Asp.Versioning;
-using Asp.Versioning.Builder;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
 using MusicDatabaseApi.Repositories;
@@ -17,41 +15,28 @@ namespace MusicDatabaseApi.Endpoints
         /// Extension of the app in order to add endpoints to retrieve albums
         /// </summary>
         /// <param name="app"></param>
-        public static void MapArtistEndpoints(this WebApplication app)
+        public static void MapArtistEndpoints(this IEndpointRouteBuilder app)
         {
-            ApiVersionSet apiVersionSet = app.NewApiVersionSet()
-                .HasApiVersion(new ApiVersion(1))
-                .HasApiVersion(new ApiVersion(2))
-                .HasApiVersion(new ApiVersion(3))
-                .ReportApiVersions()
-                .Build();
-
-            // We need to be authenticated in order to interact with the api.
-            var group = app.MapGroup("api/v{version:apiVersion}/artists")
-                .WithApiVersionSet(apiVersionSet)
-                .WithTags("Artists")
-                .HasApiVersion(1)
-                .HasApiVersion(2)
-                .HasApiVersion(3)
-                .RequireAuthorization();
-
-            group
-                .MapPost("/", CreateArtist)
+            app.MapPost("artists/", CreateArtist)
                 .WithName("CreateArtist")
-                .WithSummary("Create a new artist");
+                .WithSummary("Create a new artist")
+                .MapToApiVersion(2)
+                .MapToApiVersion(3);
 
-            group
-                .MapGet("/", GetArtists)
+            app.MapGet("artists/", GetArtists)
                 .WithName("GetArtists")
-                .WithSummary("Get all artists or search by name");
+                .WithSummary("Get all artists or search by name")
+                .MapToApiVersion(2)
+                .MapToApiVersion(3);
 
-            group
-                .MapGet("/{id:guid}", GetArtistById)
+            app.MapGet("artists/{id:guid}", GetArtistById)
                 .WithName("GetArtistById")
                 .WithSummary("Get a specific artist by ID")
                 .WithDescription(
                     "Queries the artist with the corresponding id from the database and retrieves its information."
-                );
+                )
+                .MapToApiVersion(2)
+                .MapToApiVersion(3);
         }
         #endregion
 

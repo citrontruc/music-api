@@ -2,8 +2,6 @@
 A class to add the endpoints to add albums to our database.
 */
 
-using Asp.Versioning;
-using Asp.Versioning.Builder;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Models;
 using MusicDatabaseApi.Repositories;
@@ -17,40 +15,22 @@ namespace MusicDatabaseApi.Endpoints
         /// Extension of the app in order to add endpoints to retrieve albums
         /// </summary>
         /// <param name="app"></param>
-        public static void MapAlbumEndpoints(this WebApplication app)
+        public static void MapAlbumEndpoints(this IEndpointRouteBuilder app)
         {
-            ApiVersionSet apiVersionSet = app.NewApiVersionSet()
-                .HasDeprecatedApiVersion(new ApiVersion(1)) // Can't input v0
-                .HasApiVersion(new ApiVersion(2))
-                .HasApiVersion(new ApiVersion(3))
-                .ReportApiVersions()
-                .Build();
-
-            // We need to be authenticated in order to interact with the api.
-            var group = app.MapGroup("api/v{version:apiVersion}/albums")
-                .WithApiVersionSet(apiVersionSet)
-                .WithTags("Albums")
-                //.HasApiVersion(1) // Map to V1
-                //.HasApiVersion(2) // Map to V2
-                .RequireAuthorization();
-
-            group
-                .MapPost("/", CreateAlbum)
+            app.MapPost("albums/", CreateAlbum)
                 .WithName("CreateAlbum")
                 .WithSummary("Create a new album")
                 .MapToApiVersion(1)
                 .MapToApiVersion(2)
                 .MapToApiVersion(3);
 
-            group
-                .MapGet("/", GetAlbums)
+            app.MapGet("albums/", GetAlbums)
                 .WithName("GetAlbums")
                 .WithSummary("Get all albums or search by name/artist")
                 .MapToApiVersion(2)
                 .MapToApiVersion(3);
 
-            group
-                .MapGet("/{id:guid}", GetAlbumById)
+            app.MapGet("albums/{id:guid}", GetAlbumById)
                 .WithName("GetAlbumById")
                 .WithSummary("Get a specific album by ID")
                 .WithDescription(

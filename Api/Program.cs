@@ -2,6 +2,7 @@
 The entry point to our program.
 */
 using Asp.Versioning;
+using Asp.Versioning.Builder;
 using Microsoft.EntityFrameworkCore;
 using MusicDatabaseApi.Data;
 using MusicDatabaseApi.Endpoints;
@@ -93,9 +94,23 @@ app.UseAuthorization();
 // Security
 app.UseHttpsRedirection();
 
+ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+    .HasDeprecatedApiVersion(new ApiVersion(1)) // Can't input v0
+    .HasApiVersion(new ApiVersion(2))
+    .HasApiVersion(new ApiVersion(3))
+    .ReportApiVersions()
+    .Build();
+
+// We need to be authenticated in order to interact with the api.
+RouteGroupBuilder versionGroup = app.MapGroup("api/v{version:apiVersion}/")
+    .WithApiVersionSet(apiVersionSet)
+    //.HasApiVersion(1) // Map to V1
+    //.HasApiVersion(2) // Map to V2
+    .RequireAuthorization();
+
 // Map all album endpoints
-app.MapAlbumEndpoints();
-app.MapArtistEndpoints();
+versionGroup.MapAlbumEndpoints();
+versionGroup.MapArtistEndpoints();
 
 //app.UseSwagger();
 if (app.Environment.IsDevelopment())
@@ -120,6 +135,7 @@ if (app.Environment.IsDevelopment())
         }
     });
     */
+
     app.MapScalarApiReference(options =>
     {
         options
