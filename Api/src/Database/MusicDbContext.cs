@@ -14,4 +14,11 @@ public class MusicDbContext : DbContext
 
     public DbSet<Album> Albums { get; set; }
     public DbSet<Artist> Artists { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Filtering for soft delete
+        modelBuilder.Entity<Album>().HasQueryFilter(p => !p.IsDeleted);
+        modelBuilder.Entity<Artist>().HasQueryFilter(p => !p.IsDeleted);
+    }
 }
