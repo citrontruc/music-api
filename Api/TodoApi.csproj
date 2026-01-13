@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>5678d384-1fdb-4f36-84cb-de583bca48d9</UserSecretsId>
