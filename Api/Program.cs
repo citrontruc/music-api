@@ -168,15 +168,16 @@ if (app.Environment.IsDevelopment())
 try
 {
     Log.Information("Starting web application");
-    app.Run();
+    await app.RunAsync();
 }
 catch (Exception ex)
 {
     Log.Fatal(ex, "Application terminated unexpectedly");
+    throw;
 }
 finally
 {
-    Log.CloseAndFlush();
+    await Log.CloseAndFlushAsync();
 }
 
 #endregion
