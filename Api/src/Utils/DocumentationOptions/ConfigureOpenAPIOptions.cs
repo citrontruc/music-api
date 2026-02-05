@@ -6,7 +6,7 @@ using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
-public sealed class ConfigureOpenApiOptions : IOpenApiDocumentTransformer
+internal sealed class ConfigureOpenApiOptions : IOpenApiDocumentTransformer
 {
     private readonly IApiVersionDescriptionProvider _provider;
 

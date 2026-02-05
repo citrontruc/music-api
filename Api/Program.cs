@@ -98,7 +98,7 @@ app.UseHttpsRedirection();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<MusicDbContext>();
-    await context.Database.MigrateAsync();
+    await context.Database.MigrateAsync().ConfigureAwait(false);
 }
 
 # endregion

@@ -7,7 +7,7 @@ using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Data;
 
-public class MusicDbContext : DbContext
+internal class MusicDbContext : DbContext
 {
     public MusicDbContext(DbContextOptions<MusicDbContext> options)
         : base(options) { }

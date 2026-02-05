@@ -2,7 +2,7 @@
 An abstract class to fix query parameters when we retrieve our elements
 */
 
-public abstract class QueryStringParameters
+internal abstract class QueryStringParameters
 {
     const int maxPageSize = 50;
     public int PageNumber { get; set; } = 1;

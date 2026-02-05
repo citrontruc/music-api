@@ -8,7 +8,7 @@ using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Repositories
 {
-    public class SqlAlbumRepository : IAlbumRepository
+    internal class SqlAlbumRepository : IAlbumRepository
     {
         private PaginationParameters _defaultPaginationParameters;
 
@@ -31,7 +31,7 @@ namespace MusicDatabaseApi.Repositories
                 IsDeleted: false
             );
             await db.Albums.AddAsync(album);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return album;
         }

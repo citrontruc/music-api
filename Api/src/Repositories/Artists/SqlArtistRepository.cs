@@ -8,7 +8,7 @@ using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Repositories
 {
-    public class SqlArtistRepository : IArtistRepository
+    internal class SqlArtistRepository : IArtistRepository
     {
         private PaginationParameters _defaultPaginationParameters;
 
@@ -28,7 +28,7 @@ namespace MusicDatabaseApi.Repositories
                 IsDeleted: false
             );
             await db.Artists.AddAsync(artist);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return artist;
         }

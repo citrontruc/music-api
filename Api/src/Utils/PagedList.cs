@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ListPagination
 {
-    public class PagedList<T> : List<T>
+    internal class PagedList<T> : List<T>
     {
         public int CurrentPage { get; private set; }
         public int TotalPages { get; private set; }
@@ -34,7 +34,7 @@ namespace ListPagination
 
         public static PagedList<T> ToPagedList(List<T> source, int pageSize, int pageNumber)
         {
-            var count = source.Count();
+            var count = source.Count;
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }

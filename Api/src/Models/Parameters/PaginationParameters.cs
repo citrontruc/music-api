@@ -2,7 +2,7 @@
 Method for pagination verification.
 */
 
-public class PaginationParameters : QueryStringParameters
+internal class PaginationParameters : QueryStringParameters
 {
     /// <summary>
     /// A method to check that the pages asked by the user follow pagination rules.

@@ -6,7 +6,7 @@ using MusicDatabaseApi.Models;
 
 namespace MusicDatabaseApi.Repositories
 {
-    public interface IArtistRepository
+    internal interface IArtistRepository
     {
         Task<Artist> Create(MusicDbContext db, CreateArtistRequest request);
         Task<IEnumerable<Artist>> GetAll(MusicDbContext db, int? pageSize, int? pageNumber);

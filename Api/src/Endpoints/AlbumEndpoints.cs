@@ -8,7 +8,7 @@ using MusicDatabaseApi.Repositories;
 
 namespace MusicDatabaseApi.Endpoints
 {
-    public static class AlbumEndpoints
+    internal static class AlbumEndpoints
     {
         #region Create Endpoints
         /// <summary>

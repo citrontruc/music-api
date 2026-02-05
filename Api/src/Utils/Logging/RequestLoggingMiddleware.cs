@@ -2,7 +2,7 @@
 Middleware to log all incoming calls as information.
 */
 
-public class RequestLoggingMiddleware : IloggerMiddleware
+internal class RequestLoggingMiddleware : IloggerMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestLoggingMiddleware> _logger;

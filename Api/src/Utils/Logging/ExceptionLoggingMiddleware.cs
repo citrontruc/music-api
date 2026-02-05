@@ -2,7 +2,7 @@
 Middleware to log all exceptions before throwing them.
 */
 
-public class ExceptionLoggingMiddleware : IloggerMiddleware
+internal class ExceptionLoggingMiddleware : IloggerMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionLoggingMiddleware> _logger;
